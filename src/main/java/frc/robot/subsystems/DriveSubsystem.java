@@ -11,6 +11,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.WPIUtilJNI;
+import edu.wpi.first.wpilibj.ADIS16448_IMU.IMUAxis;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
@@ -205,7 +206,7 @@ public class DriveSubsystem extends SubsystemBase{
         return Rotation2d.fromDegrees(gyro.getAngle(/*IMUAxis.kZ */)).getDegrees();
     }
 
-    /**public double getTurnState() {
-        return gyro.getRate(IMUAxis.kZ) * 
-    }**/
+    public double getTurnState() {
+        return gyro.getRate(); 
+    }
 }
