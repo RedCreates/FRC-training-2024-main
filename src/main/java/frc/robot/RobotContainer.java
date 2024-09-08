@@ -16,7 +16,6 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
-import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.DriveSubsystem;
@@ -35,11 +34,12 @@ import java.util.List;
  */
 public class RobotContainer {
   /* The container for the robot. Contains subsystems, OI devices, and commands. */
-  public RobotContainer() {
+  /**
+   */
 
-    private final var robotDrive = new DriveSubsystem;
+    private final DriveSubsystem robotDrive = new DriveSubsystem();
 
-    var driverController  = new XboxController(OIConstants.kDriverControllerPort);
+    PS4Controller driverController  = new PS4Controller(OIConstants.kDriverControllerPort);
 
     public RobotContainer() {
           // Configure the trigger bindings
@@ -51,20 +51,20 @@ public class RobotContainer {
                 -MathUtil.applyDeadband(driverController.getLeftY()*0.5, OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(driverController.getLeftX()*0.5, OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(driverController.getRawAxis(4)*0.5, OIConstants.kDriveDeadband),
-                true, true),          )
-        )
+                true, true), robotDrive)
+        );
     }
 
-  }
+  
 
   private void configureBindings() {
-    new JoystickButton(driverController, Button.kR1.values).whileTrue(new RunCommand(
+    new JoystickButton(driverController, Button.kR1.value).whileTrue(new RunCommand(
       () -> robotDrive.setX(), robotDrive
     ));
 
     new JoystickButton(driverController, Button.kCircle.value).onTrue(new InstantCommand(
       () -> robotDrive.zeroHeading(), robotDrive
-    ))
+    ));
   }
 
   /**
