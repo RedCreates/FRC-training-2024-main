@@ -11,10 +11,10 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.WPIUtilJNI;
-import edu.wpi.first.wpilibj.ADIS16448_IMU.IMUAxis;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.RobotContainer.AutoConstants;
 import frc.robot.utils.SwerveUtils;
 
 // declares to be a part of the subsystem framework
@@ -164,7 +164,7 @@ public class DriveSubsystem extends SubsystemBase{
 
         // converts and translates the final speeds to swerve module states referring back to drive system kinematics
         SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
-            // depending on field relative while using ternary operator(small conditional), sppeds are converted to robot-relative speeds 
+            // depending on field relative while using ternary operator(small conditional), speeds are converted to robot-relative speeds 
             fieldrelative ?
              ChassisSpeeds.fromFieldRelativeSpeeds(finalx, finaly, finalrot, Rotation2d.fromDegrees(-gyro.getAngle())) 
              : new ChassisSpeeds(finalx,finaly,finalrot));
@@ -186,6 +186,15 @@ public class DriveSubsystem extends SubsystemBase{
         kFRight.setState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
         kBLeft.setState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
         kBRight.setState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
+    }
+
+    public void setModuleStates(SwerveModuleState[] desiredStates) {
+        SwerveDriveKinematics.desaturateWheelSpeeds(
+            desiredStates, AutoConstants.kMaxSpeedMetersPerSecond);
+    kFLeft.setState(desiredStates[0]);
+    kFRight.setState(desiredStates[1]);
+    kBLeft.setState(desiredStates[2]);
+    kBRight.setState(desiredStates[3]);
     }
 
     // resets the drive encoders
