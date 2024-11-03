@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.RobotContainer.AutoConstants;
 import frc.robot.utils.SwerveUtils;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 // declares to be a part of the subsystem framework
 public class DriveSubsystem extends SubsystemBase{
@@ -52,12 +53,15 @@ public class DriveSubsystem extends SubsystemBase{
     @Override
     public void periodic() {
         // updates the odometry using the current values gyro and position 
-        odometry.update(Rotation2d.fromDegrees(-gyro.getAngle()), new SwerveModulePosition[] {
+        odometry.update(
+            Rotation2d.fromDegrees(-gyro.getAngle()),
+            new SwerveModulePosition[] {
         kFLeft.getPosition(),
         kFRight.getPosition(),
         kBLeft.getPosition(),
         kBRight.getPosition()
     });
+    SmartDashboard.putString("odometry", odometry.getPoseMeters().toString());
     }
 
     // returns the current position of the robot as a 'Pose2d' object

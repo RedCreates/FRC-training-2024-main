@@ -49,7 +49,7 @@ public class MAXSwereveModule {
         kDrivingPID = kDrivingMAX.getPIDController();
         // set up the encoders into the PIDcontrollers
         kTurningPID.setFeedbackDevice(kTurningEncoder);
-        kTurningPID.setFeedbackDevice(kDriveEncoder);
+        kDrivingPID.setFeedbackDevice(kDriveEncoder);
 
         // use the conversion factors from class "Constants" and affiliate them with the PIDcontrollers
         kDriveEncoder.setPositionConversionFactor(ModuleConstants.kDrivingEncoderPositionFactor);
