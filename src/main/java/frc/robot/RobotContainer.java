@@ -16,6 +16,7 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
+import frc.commands.DefaultDriveCommand;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.DriveSubsystem;
@@ -38,14 +39,7 @@ public class RobotContainer {
           // Configure the trigger bindings
       configureBindings();
 
-      robotDrive.setDefaultCommand(
-        new RunCommand(
-          () -> robotDrive.drive(
-                -MathUtil.applyDeadband(driverController.getLeftY()*0.5, OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(driverController.getLeftX()*0.5, OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(driverController.getRawAxis(4)*0.5, OIConstants.kDriveDeadband),
-                true, true), robotDrive)
-        );
+      robotDrive.setDefaultCommand(new DefaultDriveCommand(robotDrive));
     }
 
   
