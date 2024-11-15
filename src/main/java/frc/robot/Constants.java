@@ -53,7 +53,7 @@ public final class Constants {
         public static final double kBackRightOffset = (Math.PI / 2);
 
         public static final double kMaxSpeedMetersPerSec = 4.0; // max speed in mps
-        public static final double kMaxAngSpeedRadiansPerSec = 2*Math.PI; // max turning speed in rps
+        public static final double kMaxAngSpeedRadiansPerSec = 2 * Math.PI; // max turning speed in rps
     }
 
     public static class ModuleConstants {
@@ -103,6 +103,7 @@ public final class Constants {
 
     public static final class OIConstants {
         public static final int kDriverControllerPort = 0;
+        public static final int kCoPilotControllerPort = 0;
         public static final double kDriveDeadband = 0.05;
     }
 
@@ -111,8 +112,26 @@ public final class Constants {
     }
 
     public static final class LEDConstants {
-    public static final int kLEDBarPWM = 9;
-    public static final int ledLength = 40;
-    public static final int ledBufferLength = 40;
+        public static final int kLEDBarPWM = 9;
+        public static final int ledLength = 40;
+        public static final int ledBufferLength = 40;
+    }
+
+    public static final class TestMotorConstants {
+        public static final int kTestMotorCanId = 9;
+
+        public static final double kTestMotorP = 0.0005;
+        public static final double kTestMotorI = 0;
+        public static final double kTestMotorD = 0;
+        public static final double kTestMotorFF = 0.00007;
+
+        public static final double kTestMotorSpeed = 1;
+        public static final double kTestMotorMinOutput = -1;
+        public static final double kTestMotorMaxOutput = 1;
+
+        public static final double kTestMotorSpeedDeadband = 250; // sets a safe range for the motor to be stay out of corrections
+
+        public static final double kTestMotorSpeedNormal = 2000;
+
     }
 }
