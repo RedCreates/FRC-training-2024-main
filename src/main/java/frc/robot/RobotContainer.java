@@ -14,37 +14,47 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj.PS4Controller.Button;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.XboxController.Button;
 import frc.commands.DefaultDriveCommand;
+import frc.commands.DefaultTestMotorCommand;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.Constants.TestMotorConstants;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.TestMotorSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+
 import java.util.List;
 
 public class RobotContainer {
 
   private final DriveSubsystem robotDrive = new DriveSubsystem();
 
+  private final TestMotorSubsystem testMotor = new TestMotorSubsystem();
+
   XboxController driverController = new XboxController(OIConstants.kDriverControllerPort);
+
+  XboxController subController = new XboxController(OIConstants.kCoPilotControllerPort);
 
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
 
     robotDrive.setDefaultCommand(new DefaultDriveCommand(robotDrive));
+    testMotor.setDefaultCommand(new DefaultTestMotorCommand(testMotor, TestMotorConstants.kTestMotorSpeedMedium));
   }
 
   private void configureBindings() {
-    new JoystickButton(driverController, Button.kR1.value).whileTrue(new RunCommand(
+    new JoystickButton(driverController, Button.kX.value).whileTrue(new RunCommand(
         () -> robotDrive.setX(), robotDrive));
 
-    new JoystickButton(driverController, Button.kCircle.value).onTrue(new InstantCommand(
+    new JoystickButton(driverController, Button.kY.value).onTrue(new InstantCommand(
         () -> robotDrive.zeroHeading(), robotDrive));
   }
 
@@ -113,5 +123,9 @@ public class RobotContainer {
     // Constraint for the motion profiled robot angle controller
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
         kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+  }
+
+  private boolean leftTrigger(){
+    return (subController.getRawAxis(2) > 0.75);
   }
 }

@@ -103,7 +103,7 @@ public final class Constants {
 
     public static final class OIConstants {
         public static final int kDriverControllerPort = 0;
-        public static final int kCoPilotControllerPort = 0;
+        public static final int kCoPilotControllerPort = 1;
         public static final double kDriveDeadband = 0.05;
     }
 
@@ -118,20 +118,35 @@ public final class Constants {
     }
 
     public static final class TestMotorConstants {
-        public static final int kTestMotorCanId = 9;
+        public static final int kTestRotMotorCanId = 9;
+        public static final int kTestPosMotorCanId = 10;
 
         public static final double kTestMotorP = 0.0005;
         public static final double kTestMotorI = 0;
         public static final double kTestMotorD = 0;
         public static final double kTestMotorFF = 0.00007;
 
-        public static final double kTestMotorSpeed = 1;
-        public static final double kTestMotorMinOutput = -1;
-        public static final double kTestMotorMaxOutput = 1;
+        public static final double kTestPosMotorP = 0.0005;
+        public static final double kTestPosMotorI = 0;
+        public static final double kTestPosMotorD = 0;
+        public static final double kTestPosMotorFF = 0.00007;
 
-        public static final double kTestMotorSpeedDeadband = 250; // sets a safe range for the motor to be stay out of corrections
-
+        public static final double kTestMotorSpeedSlow = 800;
+        public static final double kTestMotorSpeedMedium = 1200;
         public static final double kTestMotorSpeedNormal = 2000;
 
+        public static final double kTestMotorTopPosition = 100;
+        public static final double kTestMotorIdlePosition = 0;
+        public static final double kTestPosMotorSpeed = 1;
+
+        public static final double kTestMotorMinOutput = -1;
+        public static final double kTestMotorMaxOutput = 1;
+        public static final double kTestPosMotorMinOutput = -0.4;
+        public static final double kTestPosMotorMaxOutput = 0.7;
+
+
+        public static final double kTestMotorSpeedDeadband = 250; // sets a safe range for the motor to be stay out of corrections
+        public static final double kTestPosMotorPositionDeadband = 3;
+        
     }
 }
