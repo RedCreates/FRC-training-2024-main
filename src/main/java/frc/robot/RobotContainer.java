@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.cscore.HttpCamera;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -16,6 +17,11 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.commands.DefaultDriveCommand;
 import frc.commands.DefaultTestMotorCommand;
 import frc.robot.Constants.DriveConstants;
@@ -46,6 +52,8 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
 
+    setUpShuffleBoard();
+
     robotDrive.setDefaultCommand(new DefaultDriveCommand(robotDrive));
     testMotor.setDefaultCommand(new DefaultTestMotorCommand(testMotor, TestMotorConstants.kTestMotorSpeedMedium));
   }
@@ -56,9 +64,20 @@ public class RobotContainer {
 
     new JoystickButton(driverController, Button.kY.value).onTrue(new InstantCommand(
         () -> robotDrive.zeroHeading(), robotDrive));
+    
+    new JoystickButton(subController, Button.kX.value).whileTrue(new RunCommand(() -> testMotor.setRotationalMotorDutyCycle(1)));
+    new JoystickButton(subController, Button.kB.value).whileTrue(new RunCommand(() -> testMotor.setRotationalMotorDutyCycle(-1)));
+
   }
 
   public Command getAutonomousCommand() {
+
+    SendableChooser<AutoType> type = (SendableChooser<AutoType>)SmartDashboard.getData("Auto Type");
+    double delay = SmartDashboard.getNumber("Auto Delay", 0);
+
+    robotDrive.zeroHeading();
+
+    
     // Create config for trajectory; basically setting for the trajectory
     TrajectoryConfig config = new TrajectoryConfig(DriveConstants.kMaxSpeedMetersPerSec,
         AutoConstants.kMaxAccelerationMetersPerSecondSquared)
@@ -124,6 +143,28 @@ public class RobotContainer {
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
         kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
   }
+
+  public enum AutoType {
+    
+  }
+
+  public void setUpShuffleBoard() {
+    // Create a camera stream for Limelight
+    HttpCamera limelightFeed = new HttpCamera("Limelight", "http://10.1.23.23:5800/stream.mjpg");
+    
+    // Add it to Shuffleboard
+    Shuffleboard.getTab("Vision").add("Limelight Camera", limelightFeed);
+
+    // Add Limelight targeting information to Shuffleboard
+    ShuffleboardTab visionTab = Shuffleboard.getTab("Vision");
+
+    visionTab.add("Target X", 0.0).withWidget(BuiltInWidgets.kTextView)
+        .getEntry().setDouble(LimelightHelpers.getTX("limelight"));
+    visionTab.add("Target Y", 0.0).withWidget(BuiltInWidgets.kTextView)
+        .getEntry().setDouble(LimelightHelpers.getTY("limelight"));
+    visionTab.add("Target Area", 0.0).withWidget(BuiltInWidgets.kTextView)
+        .getEntry().setDouble(LimelightHelpers.getTA("limelight"));
+}
 
   private boolean leftTrigger(){
     return (subController.getRawAxis(2) > 0.75);

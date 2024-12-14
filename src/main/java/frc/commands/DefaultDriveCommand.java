@@ -5,6 +5,8 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.OIConstants;
+import frc.robot.LimelightHelpers;
+import frc.robot.LimelightHelpers.LimelightResults;
 import frc.robot.subsystems.DriveSubsystem;
 
 public class DefaultDriveCommand extends Command{
@@ -46,51 +48,51 @@ public class DefaultDriveCommand extends Command{
         }
 
 
-        // // when Button A is pressed, ....
-        //  if(driverController.getAButton()) {
-        //     // turns on the lime_light
-        //     LimelightHelpers.setLEDMode_ForceOn("limelight");
-        //     // retrieves lime_light data
-        //     LimelightResults results = LimelightHelpers.getLatestResults("limelight");
-        //     // if there is any visual input for value (binary) & the value translates to ID 7 or ID 4 target, ....
-        //     if(results.targetingResults.targets_Fiducials.length > 0 && 
-        //     (results.targetingResults.targets_Fiducials[0].fiducialID == 7 || 
-        //         results.targetingResults.targets_Fiducials[0].fiducialID == 4)) {
+        // when Button A is pressed, ....
+         if(driverController.getAButton()) {
+            // turns on the lime_light
+            LimelightHelpers.setLEDMode_ForceOn("limelight");
+            // retrieves lime_light data
+            LimelightResults results = LimelightHelpers.getLatestResults("limelight");
+            // if there is any visual input for value (binary) & the value translates to ID 7 or ID 4 target, ....
+            if(results.targetingResults.targets_Fiducials.length > 0 && 
+            (results.targetingResults.targets_Fiducials[0].fiducialID == 7 || 
+                results.targetingResults.targets_Fiducials[0].fiducialID == 4)) {
                 
-        //         // calculate target angle 
-        //         double angle = Math.atan(results.targetingResults.targets_Fiducials[0]
-        //             .getTargetPose_CameraSpace().getX() /
-        //             results.targetingResults.targets_Fiducials[0]
-        //             .getTargetPose_CameraSpace().getZ());
+                // calculate target angle 
+                double angle = Math.atan(results.targetingResults.targets_Fiducials[0]
+                    .getTargetPose_CameraSpace().getX() /
+                    results.targetingResults.targets_Fiducials[0]
+                    .getTargetPose_CameraSpace().getZ());
                 
-        //         // the angle is displayed in the dashboard UI
-        //         SmartDashboard.putNumber("angle", angle);
+                // the angle is displayed in the dashboard UI
+                SmartDashboard.putNumber("angle", angle);
                 
-        //         // if the target angle is greater than the given prox value, ....
-        //         if(Math.abs(angle) > SmartDashboard.getNumber("Aiming deadband", 0.05)) {
-        //             // drive this assistive way 
-        //             driveSubsystem.drive(-multiplier*MathUtil.applyDeadband(driverController.getLeftY(), 0.015),
-        //                                 -multiplier*MathUtil.applyDeadband(driverController.getLeftX(), 0.015),
-        //                                 Math.copySign(Math.abs(angle / 
-        //                                 SmartDashboard.getNumber("Aiming kp", 5.0)) + 
-        //                                 SmartDashboard.getNumber("Aiming minsteer", 0.035), -angle), 
-        //                                 true, true);
-        //         } 
-        //         // otherwise (target is not near), ....
-        //         else {
-        //             // drive normally without rotating
-        //             driveSubsystem.drive(-multiplier*MathUtil.applyDeadband(driverController.getLeftY(), 0.015),
-        //                                 -multiplier*MathUtil.applyDeadband(driverController.getLeftX(), 0.015), 
-        //                                 0, true, true);
-        //         }
-        //         return;
-        //     }
-        // } 
-        // // otherwise (Button A not pressed), ....
-        // else {
-        //     // turn the lime_light led off 
-        //     LimelightHelpers.setLEDMode_ForceOff("limelight");
-        // }
+                // if the target angle is greater than the given prox value, ....
+                if(Math.abs(angle) > SmartDashboard.getNumber("Aiming deadband", 0.05)) {
+                    // drive this assistive way 
+                    driveSubsystem.drive(-multiplier*MathUtil.applyDeadband(driverController.getLeftY(), 0.015),
+                                        -multiplier*MathUtil.applyDeadband(driverController.getLeftX(), 0.015),
+                                        Math.copySign(Math.abs(angle / 
+                                        SmartDashboard.getNumber("Aiming kp", 5.0)) + 
+                                        SmartDashboard.getNumber("Aiming minsteer", 0.035), -angle), 
+                                        true, true);
+                } 
+                // otherwise (target is not near), ....
+                else {
+                    // drive normally without rotating
+                    driveSubsystem.drive(-multiplier*MathUtil.applyDeadband(driverController.getLeftY(), 0.015),
+                                        -multiplier*MathUtil.applyDeadband(driverController.getLeftX(), 0.015), 
+                                        0, true, true);
+                }
+                return;
+            }
+        } 
+        // otherwise (Button A not pressed), ....
+        else {
+            // turn the lime_light led off 
+            LimelightHelpers.setLEDMode_ForceOff("limelight");
+        }
 
 
 

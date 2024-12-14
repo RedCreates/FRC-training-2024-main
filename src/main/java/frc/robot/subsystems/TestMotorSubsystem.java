@@ -10,9 +10,11 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.TestMotorConstants;
 
 public class TestMotorSubsystem extends SubsystemBase {
@@ -20,9 +22,11 @@ public class TestMotorSubsystem extends SubsystemBase {
     private final CANSparkMax rotMotor = new CANSparkMax(TestMotorConstants.kTestPosMotorCanId, MotorType.kBrushed);
     private final CANSparkMax posMotor = new CANSparkMax(TestMotorConstants.kTestRotMotorCanId, MotorType.kBrushless);
 
+    private final XboxController subController = new XboxController(OIConstants.kCoPilotControllerPort);
+
     // PID Controllers
     private final SparkPIDController posMotorPID = posMotor.getPIDController();
-    private final SparkPIDController rotMotorPID = rotMotor.getPIDController();
+    // private final SparkPIDController rotMotorPID = rotMotor.getPIDController();
 
     // Encoders
     private final RelativeEncoder posMotorEncoder = posMotor.getEncoder();
@@ -55,13 +59,13 @@ public class TestMotorSubsystem extends SubsystemBase {
         posMotorPID.setFeedbackDevice(posMotorEncoder);
 
         // Configure soft limits for position motor
-        // posMotor.setSoftLimit(SoftLimitDirection.kForward, (float) TestMotorConstants.kTestMotorTopPosition);
-        // posMotor.setSoftLimit(SoftLimitDirection.kReverse, (float) TestMotorConstants.kTestMotorIdlePosition);
-        // posMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
-        // posMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
+        posMotor.setSoftLimit(SoftLimitDirection.kForward, (float) TestMotorConstants.kTestMotorTopPosition);
+        posMotor.setSoftLimit(SoftLimitDirection.kReverse, (float) TestMotorConstants.kTestMotorIdlePosition);
+        posMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
+        posMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
 
         // Set output ranges
-        rotMotorPID.setOutputRange(TestMotorConstants.kTestMotorMinOutput, TestMotorConstants.kTestMotorMaxOutput);
+        // rotMotorPID.setOutputRange(TestMotorConstants.kTestMotorMinOutput, TestMotorConstants.kTestMotorMaxOutput);
         posMotorPID.setOutputRange(TestMotorConstants.kTestPosMotorMinOutput, TestMotorConstants.kTestPosMotorMaxOutput);
 
         // Initialize encoder position
@@ -91,23 +95,28 @@ public class TestMotorSubsystem extends SubsystemBase {
         rotMotor.set(dutyCycle);
     }
 
-    public void setRotationalMotorVelocity(double velocity) {
-        rotMotorPID.setReference(velocity, ControlType.kVelocity);
-        targetVelocitySetpoint = velocity;
-    }
+    // public void setRotationalMotorVelocity(double velocity) {
+    //     rotMotorPID.setReference(velocity, ControlType.kVelocity);
+    //     targetVelocitySetpoint = velocity;
+    // }
 
     public void stopRotationalMotor() {
         setRotationalMotorDutyCycle(0);
         targetVelocitySetpoint = 0;
     }
 
-    public boolean isAtTargetSpeed() {
-        return Math.abs(rotMotor.getEncoder().getVelocity() - targetVelocitySetpoint) < TestMotorConstants.kTestMotorSpeedDeadband;
+    @Override
+    public void periodic(){
+        setRotationalMotorDutyCycle(subController.getRightY()*TestMotorConstants.kTestMotorMaxOutput);
     }
+
+    // public boolean isAtTargetSpeed() {
+    //     return Math.abs(rotMotor.getEncoder().getVelocity() - targetVelocitySetpoint) < TestMotorConstants.kTestMotorSpeedDeadband;
+    // }
 
     // Positional Motor Methods
     public void setPositionalMotorDutyCycle(double dutyCycle) {
-        targetPositionSetpoint = null; // Disable position control
+        // targetPositionSetpoint = null; // Disable position control
         posMotor.set(dutyCycle);
     }
 

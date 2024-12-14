@@ -16,10 +16,12 @@ public class DefaultTestMotorCommand extends Command {
         this.testMotorSubsystem = subsystem;
         this.rollerSpeed = rollerSpeed;
         this.subController = new XboxController(OIConstants.kCoPilotControllerPort);
-
+        
         // Declare subsystem dependencies
         addRequirements(subsystem);
     }
+
+
 
     @Override
     public void initialize() {
