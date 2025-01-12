@@ -27,13 +27,14 @@ public class TestMotorSubsystem extends SubsystemBase {
     // PID Controllers
     private final SparkPIDController posMotorPID = posMotor.getPIDController();
     // private final SparkPIDController rotMotorPID = rotMotor.getPIDController();
-
     // Encoders
     private final RelativeEncoder posMotorEncoder = posMotor.getEncoder();
+    
 
     // Target Variables
     private double targetVelocitySetpoint = 0.0;
     private Double targetPositionSetpoint = null;
+
 
     public TestMotorSubsystem() {
         // Register the subsystem
@@ -70,6 +71,7 @@ public class TestMotorSubsystem extends SubsystemBase {
 
         // Initialize encoder position
         posMotorEncoder.setPosition(0);
+        posMotorPID.setFeedbackDevice(posMotorEncoder);
     }
 
     // @Override
@@ -90,6 +92,10 @@ public class TestMotorSubsystem extends SubsystemBase {
     //     }
     // }
 
+    public void setPositionalMotorPosition(double position){
+        posMotorPID.setReference(position, ControlType.kPosition);
+    }
+
     // Rotational Motor Methods
     public void setRotationalMotorDutyCycle(double dutyCycle) {
         rotMotor.set(dutyCycle);
@@ -107,7 +113,7 @@ public class TestMotorSubsystem extends SubsystemBase {
 
     @Override
     public void periodic(){
-        setRotationalMotorDutyCycle(subController.getRightY()*TestMotorConstants.kTestMotorMaxOutput);
+        SmartDashboard.putNumber("posMotorPosition", getPositionalMotorPosition());
     }
 
     // public boolean isAtTargetSpeed() {
@@ -118,10 +124,6 @@ public class TestMotorSubsystem extends SubsystemBase {
     public void setPositionalMotorDutyCycle(double dutyCycle) {
         // targetPositionSetpoint = null; // Disable position control
         posMotor.set(dutyCycle);
-    }
-
-    public void setPositionalMotorPosition(double position) {
-        targetPositionSetpoint = position;
     }
 
     public void stopPositionalMotor() {

@@ -144,6 +144,8 @@ public final class Constants {
         public static final double kTestPosMotorMinOutput = -0.4;
         public static final double kTestPosMotorMaxOutput = 0.7;
 
+        public static final double kTestMotorHiPos = 200;
+        public static final double kTestMotorLoPos = 120;
 
         public static final double kTestMotorSpeedDeadband = 250; // sets a safe range for the motor to be stay out of corrections
         public static final double kTestPosMotorPositionDeadband = 3;

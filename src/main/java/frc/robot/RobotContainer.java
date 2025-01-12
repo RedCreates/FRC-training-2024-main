@@ -33,6 +33,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -48,6 +49,8 @@ public class RobotContainer {
 
   XboxController subController = new XboxController(OIConstants.kCoPilotControllerPort);
 
+  CommandXboxController subControllerCommand = new CommandXboxController(OIConstants.kCoPilotControllerPort);
+
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
@@ -59,6 +62,8 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
+    subControllerCommand.y().whileTrue(new RunCommand(() -> testMotor.setPositionalMotorPosition(TestMotorConstants.kTestMotorTopPosition)));
+
     new JoystickButton(driverController, Button.kX.value).whileTrue(new RunCommand(
         () -> robotDrive.setX(), robotDrive));
 
@@ -71,10 +76,6 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-
-    SendableChooser<AutoType> type = (SendableChooser<AutoType>)SmartDashboard.getData("Auto Type");
-    double delay = SmartDashboard.getNumber("Auto Delay", 0);
-
     robotDrive.zeroHeading();
 
     
