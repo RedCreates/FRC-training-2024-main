@@ -8,6 +8,8 @@ import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 
 /**
@@ -149,6 +151,36 @@ public final class Constants {
 
         public static final double kTestMotorSpeedDeadband = 250; // sets a safe range for the motor to be stay out of corrections
         public static final double kTestPosMotorPositionDeadband = 3;
+    }
+
+    public static final class AutoConstants {
+        public static final double kMaxSpeedMetersPerSecondStandard = 1.75;
+        public static final double kMaxAccelerationMetersPerSecondSquaredStandard = 2.25;
+
+        public static final double kMaxSpeedMetersPerSecondFast = 2.25;
+        public static final double kMaxAccelerationMetersPerSecondSquaredFast = 2.5;
+
+        public static final double kMaxSpeedMetersPerSecondSlow = 1.45;
+        public static final double kMaxAccelerationMetersPerSecondSquaredSlow = 1.75;
+
+        public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
+        public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
+
+        public static final double kPXController = 1;
+        public static final double kPYController = 1;
+        public static final double kPThetaController = 1;
+
+        // Constraint for the motion profiled robot angle controller
+        public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
+            kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+
+        public static final TrajectoryConfig kTrajConfigStandard = new TrajectoryConfig(
+            AutoConstants.kMaxSpeedMetersPerSecondStandard, AutoConstants.kMaxAccelerationMetersPerSecondSquaredStandard).setKinematics(DriveConstants.kDriveKinematics);
         
+        public static final TrajectoryConfig kTrajConfigFast = new TrajectoryConfig(
+            AutoConstants.kMaxSpeedMetersPerSecondFast, AutoConstants.kMaxAccelerationMetersPerSecondSquaredFast).setKinematics(DriveConstants.kDriveKinematics);
+
+        public static final TrajectoryConfig kTrajConfigSlow = new TrajectoryConfig(
+            AutoConstants.kMaxSpeedMetersPerSecondSlow, AutoConstants.kMaxAccelerationMetersPerSecondSquaredSlow).setKinematics(DriveConstants.kDriveKinematics);
     }
 }

@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.ADIS16448_IMU.IMUAxis;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.RobotContainer.AutoConstants;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.utils.SwerveUtils;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -35,6 +35,8 @@ public class DriveSubsystem extends SubsystemBase {
     // instance of gyro for orientantion
     // parameter for the gyro specifies the port for connection
     private final AHRS gyro = new AHRS(Port.kMXP);
+
+    private double fieldRelativeOffset = 0;
 
     // movement variables
     private double currentRotation = 0;
@@ -183,7 +185,7 @@ public class DriveSubsystem extends SubsystemBase {
                 // speeds are converted to robot-relative speeds
                 fieldrelative
                         ? ChassisSpeeds.fromFieldRelativeSpeeds(finalx, finaly, finalrot,
-                                Rotation2d.fromDegrees(-gyro.getAngle()))
+                                Rotation2d.fromDegrees(-gyro.getAngle()).plus(Rotation2d.fromDegrees(fieldRelativeOffset)))
                         : new ChassisSpeeds(finalx, finaly, finalrot));
 
         // checks and makes sure none of the module states exceeds the max allowed
@@ -207,7 +209,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     public void setModuleStates(SwerveModuleState[] desiredStates) {
         SwerveDriveKinematics.desaturateWheelSpeeds(
-                desiredStates, AutoConstants.kMaxSpeedMetersPerSecond);
+                desiredStates, DriveConstants.kMaxSpeedMetersPerSec);
         kFLeft.setState(desiredStates[0]);
         kFRight.setState(desiredStates[1]);
         kBLeft.setState(desiredStates[2]);
@@ -225,6 +227,7 @@ public class DriveSubsystem extends SubsystemBase {
     // resets the gyro heading to zero
     public void zeroHeading() {
         gyro.reset();
+        fieldRelativeOffset = 0;
     }
 
     // returns robot's heading in degrees (reading from gyro)
@@ -234,5 +237,9 @@ public class DriveSubsystem extends SubsystemBase {
 
     public double getTurnState() {
         return gyro.getRate();
+    }
+
+    public void setFieldRelativeOffset(double offset) {
+        this.fieldRelativeOffset = offset;
     }
 }
